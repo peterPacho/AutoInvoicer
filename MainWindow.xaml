@@ -1,0 +1,174 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="AutoInvoicer.MainWindow"
+        mc:Ignorable="d"
+        Title="AutoInvoicer vX.X.X" Height="650" Width="1200" WindowStartupLocation="CenterScreen" MinHeight="650" MinWidth="1200"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Closing="Window_Closing"
+    >
+
+    <Grid>
+        <TabControl x:Name="tabControl">
+
+            <TabItem Header="Invoices" x:Name="tabInvoices">
+
+                <Grid>
+                    <DockPanel Height="45" VerticalAlignment="Top">
+                        <Button Content="New Invoice" HorizontalAlignment="Left" Margin="5" Click="Button_NewInvoice" />
+                        <Button x:Name="ButtonRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="5" Background="Gainsboro" Foreground="Black" Click="Button_RefreshData" ToolTip="Refresh all data from database. It will also clear the search results."/>
+
+
+                        <DockPanel x:Name="dockPanelNewSearch" HorizontalAlignment="Right" PreviewKeyDown="dockPanelNewSearch_PreviewKeyDown">
+                            <TextBox x:Name="textBoxSearch" Width="250" BorderThickness="1" Height="25" Margin="5"/>
+                            <Button Content="Search" Width="100" Margin="5" Click="buttonSearchOneTextbox_Click"/>
+                        </DockPanel>
+
+                        
+                    </DockPanel>
+
+
+                    <Grid Margin="0, 45, 0, 0">
+                        <DataGrid x:Name="dataGridInvoices" ToolTip="Double click on any record to view / edit / print it." IsReadOnly="True" SelectionMode="Single" FontSize="14" MouseDoubleClick="dataGridInvoices_MouseDoubleClick"
+                            HorizontalAlignment="Left" GridLinesVisibility="Horizontal" VerticalScrollBarVisibility="Visible" CanUserResizeColumns="False" CanUserReorderColumns="False" PreviewKeyDown="dataGridInvoices_PreviewKeyDown"
+                            HeadersVisibility="Column" ColumnWidth="*">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu Name="invoicesContextMenu">
+                                    <MenuItem Header="Edit this invoice" Click="dataGridContext_Edit" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                                    <MenuItem Header="Generate PDF" Click="dataGridContext_PDF" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Find similar by Vin" Click="dataGridContext_FindVin" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                                    <MenuItem Header="Find similar by Customer" Click="dataGridContext_FindCustomer" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                        </DataGrid>
+
+                        <StackPanel Orientation="Vertical" Grid.Column="2" Width="320" Margin="5" Visibility="Collapsed">
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+
+                            <Label Content="Empty panel put something here"/>
+                            <Button Content="dsd"/>
+
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+
+                        </StackPanel>
+
+
+
+
+                    </Grid>
+
+
+
+                </Grid>
+            </TabItem>
+
+
+
+
+            <TabItem x:Name="tabCustomers" Header="Customers">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="24*"/>
+                        <ColumnDefinition Width="1163*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Height="45" VerticalAlignment="Top" Grid.ColumnSpan="3">
+                        <Button Content="New Customer" HorizontalAlignment="Left" Margin="5" Click="button_AddNewCustomer" />
+                        <Button Content="Refresh" HorizontalAlignment="Left" Margin="5" Background="Gainsboro" Foreground="Black" Click="Button_RefreshData"/>
+                    </DockPanel>
+                    <DataGrid x:Name="dataGridCustomers" Margin="0,50,0,0" IsReadOnly="True" SelectionMode="Single" FontSize="15" GridLinesVisibility="Horizontal" AutoGenerateColumns="False" ColumnWidth="*" ToolTip="Double click on the customer info to edit / remove it." MouseDoubleClick="dataGridCustomers_MouseDoubleClick" Grid.ColumnSpan="3">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Edit this customer" Click="dataGridContext_EditCustomerRecord" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem x:Name="tabSettings" Header="Settings">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="12*"/>
+                        <ColumnDefinition Width="12*"/>
+                        <ColumnDefinition Width="14*"/>
+                        <ColumnDefinition Width="559*"/>
+                        <ColumnDefinition Width="597*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <StackPanel Margin="10,10,10,10" Grid.Column="0" Grid.ColumnSpan="4">
+                        <CheckBox x:Name="checkboxFullScreenMain" Content="Start main program in full screen window" Margin="5" Checked="checkboxFullScreenMain_Checked" Unchecked="checkboxFullScreenMain_Checked"/>
+                        <CheckBox x:Name="checkboxFullScreenInvoiceEditor" Content="Start invoice editor in full screen window" Margin="30,0" Checked="checkboxFullScreenInvoiceEditorChanged" Unchecked="checkboxFullScreenInvoiceEditorChanged"/>
+                        <CheckBox x:Name="checkboxExitAfterPDF" Content="Close the invoice editor after generating PDF" Margin="5" Checked="checkboxExitAfterPDF_Checked" Unchecked="checkboxExitAfterPDF_Checked"/>
+                        <CheckBox x:Name="checkboxFilterVehicleWords" Content="Filter key words in the Editor, Vehicle info field" ToolTip="Removes key words, like 'Truck' or '-Datsun' automatically in the Vehicle info field in Invoice Editor." Margin="5" Checked="checkboxFilterVehicleWords_Checked" Unchecked="checkboxFilterVehicleWords_Checked"/>
+                        <CheckBox x:Name="checkboxCopyNotes" Content="When duplicating invoice also copy notes" Margin="5" Checked="checkboxCopyNotes_Checked" Unchecked="checkboxCopyNotes_Checked"/>
+                        <CheckBox x:Name="checkboxDeletePDFs" Content="Delete all generated PDFs on program close" ToolTip="It will delete the PDF folder when program is closed. No reason to keep them." Margin="5" Checked="checkboxDeletePDFs_Checked" Unchecked="checkboxDeletePDFs_Checked"/>
+                        <CheckBox x:Name="checkboxDontPrintID" Content="Don't print 'Invoice #' on the invoice" Margin="5" Checked="checkboxDontPrintID_Checked" Unchecked="checkboxDontPrintID_Checked"/>
+                        <CheckBox x:Name="checkboxAllowDelete" Foreground="DarkRed" Content="Allow to delete invoice" Margin="5" ToolTip="Allows to delete the invoice in the invoice editor. It will be unchecked after exiting the program." FontWeight="Bold" Checked="checkboxAllowDelete_Checked" Unchecked="checkboxAllowDelete_Checked"/>
+
+
+                        <DockPanel Margin="5">
+                            <Label Content="Default invoice list sorting method : "/>
+                            <ComboBox x:Name="comboSortingMethod" BorderThickness="0.5" SelectionChanged="comboSortingMethod_SelectionChanged">
+                                <ComboBoxItem Content="by ID, Ascending"/>
+                                <ComboBoxItem Content="by ID, Descending"/>
+                                <ComboBoxItem Content="by Date, Ascending"/>
+                                <ComboBoxItem Content="by Date, Descending" Selector.IsSelected="True"/>
+                            </ComboBox>
+                        </DockPanel>
+
+                        <DockPanel Margin="0,20,0,0" ToolTip="If some location specified, backup file will be copied to that location. For example select Google Drive. Creates backup only once a day.">
+                            <Label Content="Custom backup file location:" />
+                            <Label Content="SomefilteLocationj/.fd./d/dfd//f" Name="labelCustomBackupLocation" Margin="0,0,0,10"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,20" ToolTip="If some location specified, backup file will be copied to that location. For example select Google Drive. Creates backup only once a day.">
+                            <Button Content="Choose location" Width="150" Height="25" Background="Gainsboro" Foreground="Black" HorizontalAlignment="Left" Click="Button_Backup_Location_Click"/>
+                            <Button Margin="10,0,0,0" Content="Clear" Width="100" Height="25" Background="Gainsboro" Foreground="Black" HorizontalAlignment="Left" Click="Button_Backup_Location_Clear"/>
+                        </DockPanel>
+                        
+                        
+
+                        <Label Content="Shop info:" ToolTip="Info that will be printed on the invoice"/>
+                        <TextBox x:Name="textboxShopInfo" BorderThickness="0.5" Height="150" AcceptsReturn="True" TextChanged="textboxShopInfo_TextChanged"/>
+                        <Button Content="Save shop info" Width="150" Background="Gainsboro" Foreground="Black" Click="Button_Click" Margin="5"/>
+
+                    </StackPanel>
+
+
+                    <StackPanel Margin="10,10,10,10" Grid.Column="4" Grid.ColumnSpan="1">
+                        <CheckBox x:Name="checkboxSearchMemory" Content="Remember search fields content" ToolTip="If enabled program will restore search fields content after program restart." Margin="5" Checked="checkboxSearchMemory_Checked" Unchecked="checkboxSearchMemory_Checked"/>
+                        <CheckBox x:Name="checkboxSearchNewPerfectMatch" Margin="30,0,0,0" Content="New search must match all phrases" ToolTip="If checked, and searched for multiple phrases, record must have all of them to show up. If unchecked, records that don't match all of the search criteria will be allowed." Checked="checkboxSearchNewPerfectMatch_Checked" Unchecked="checkboxSearchNewPerfectMatch_Checked"/>
+                        <CheckBox x:Name="checkboxSearchServices" Margin="30,0,0,0" Content="New search can also search through services" ToolTip="If checked it's possible to search through services. For example 'Lexus brakes'. It can make searches much slower!" Checked="checkboxSearchServices_Checked" Unchecked="checkboxSearchServices_Checked"/>
+                    </StackPanel>
+
+                    <Label x:Name="labelSaveInfo" Content="All settings except for shop info are saved automatically" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="4" Margin="0,0,208,5" HorizontalContentAlignment="Right" MouseDown="labelSaveInfo_MouseDown"/>
+                    <Button x:Name="buttonResetSettings" Background="DarkRed" Content="Reset all settings to default" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="4" Margin="0,0" Click="ButtonResetSettings_click"/>
+
+
+
+
+                </Grid>
+
+            </TabItem>
+
+
+
+
+        </TabControl>
+
+
+
+
+
+    </Grid>
+</Window>

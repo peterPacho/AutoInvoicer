@@ -1,0 +1,18 @@
+﻿<Window x:Class="AutoInvoicer.CustomerEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoInvoicer"
+        mc:Ignorable="d"
+        Title="Customer info editor" Height="500" Width="800" MinHeight="500" MinWidth="800"
+        WindowStartupLocation="CenterScreen" Topmost="True" ResizeMode="NoResize"
+        FontSize="20">
+    <Grid>
+        <TextBox x:Name="textBoxCustomerInfo" HorizontalAlignment="Center" Margin="10" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="750" Height="380" AcceptsReturn="True" MaxWidth="750" MaxHeight="380" VerticalScrollBarVisibility="Auto"/>
+        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="20" VerticalAlignment="Bottom" Width="200" Click="buttonSave_Click"/>
+        <Button x:Name="buttonDelete" Content="Delete" HorizontalAlignment="Center" Margin="20" VerticalAlignment="Bottom" Width="200" Click="buttonDelete_Click"/>
+        <Button x:Name="buttonCancel" Content="Cancel" HorizontalAlignment="Right" Margin="20" VerticalAlignment="Bottom" Width="200" Click="buttonCancel_Click"/>
+        
+    </Grid>
+</Window>

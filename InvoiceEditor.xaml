@@ -1,0 +1,135 @@
+﻿<Window x:Class="AutoInvoicer.InvoiceEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoInvoicer"
+        mc:Ignorable="d"
+        Title="InvoiceEditor" Height="650" Width="1200" MinHeight="650" MinWidth="1200"
+        WindowStartupLocation="CenterScreen"
+        FontSize="20" 
+        >
+    <Grid>
+
+        <Grid HorizontalAlignment="Center">
+
+
+            <Label x:Name="labelVin" Content="Vin" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" MouseLeftButtonUp="labelVin_MouseLeftButtonUp"/>
+            <Label x:Name="label1" Content="Vehicle Info" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="label2" Content="Invoice date" HorizontalAlignment="Left" Margin="362,10,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="label3" Content="Mileage" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="label4" Content="Customer" HorizontalAlignment="Right" Margin="700,10,310,0" VerticalAlignment="Top"/>
+            <Label x:Name="label6" Content="(Type or pick one from the list)" HorizontalAlignment="Left" Margin="883,13,0,0" VerticalAlignment="Top" FontSize="11"/>
+            <TextBox BorderThickness="0.5" x:Name="textBoxVin" TextChanged="textBoxVin_TextChanged" CharacterCasing="Upper" HorizontalAlignment="Left" Margin="127,10,0,0" Text="" VerticalAlignment="Top" Width="230" ToolTip="If provided, VIN will be printed on the invoice. Also makes it easier to search for the car in the future."/>
+            <TextBox BorderThickness="0.5" x:Name="textBoxVehInfo" HorizontalAlignment="Left" AcceptsReturn="True" TextChanged="textBoxVehInfo_TextChanged" Margin="127,50,0,0" Text="" VerticalAlignment="Top" Width="538" ToolTip="Will be printed on the invoice. Use YEAR MAKE MODEL format to make it easier to sort and find. If you type/paste VIN number here, it will be automatically moved to the VIN field (if that field is empty)" />
+            <TextBox BorderThickness="0.5" x:Name="textBoxMileage" HorizontalAlignment="Left" Margin="127,90,0,0" Text="" VerticalAlignment="Top" Width="154" TextChanged="textBoxMileage_TextChanged" ToolTip=""/>
+            <DatePicker BorderThickness="0.5" x:Name="dateInvoice" HorizontalAlignment="Left" Margin="484,10,0,0" VerticalAlignment="Top" DisplayDate="2021-05-20" Width="181" IsTabStop="True" SelectedDateChanged="dateInvoice_SelectedDateChanged">
+                <DatePicker.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Make it today" Click="buttonDateMakeitToday" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                    </ContextMenu>
+                </DatePicker.ContextMenu>
+            </DatePicker>
+            <ComboBox  BorderThickness="0.5" x:Name="comboBoxCustomerList" HorizontalAlignment="Left" Margin="1039,10,0,0" VerticalAlignment="Top" Width="131" Height="29" IsSynchronizedWithCurrentItem="False" SelectionChanged="comboBoxCustomerList_SelectionChanged" ToolTip="Use it to select one of 'requent' customers. Those can be added/edited/removed in main screen."/>
+            <TextBox BorderThickness="0.5" x:Name="textBoxCustomerInfo" HorizontalAlignment="Right" Margin="700,40,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" Height="126" MaxWidth="400" MaxHeight="126" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" ToolTip="Customer info that will be printed on the invoice" TextChanged="textBoxCustomerInfo_TextChanged"/>
+            <Label x:Name="labelMileageWarning" Content="(Only numerical values, no thousands separator)" HorizontalAlignment="Left" Margin="289,100,0,0" VerticalAlignment="Top" Foreground="Red" FontSize="14" Visibility="Hidden"/>
+
+        </Grid>
+
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="buttonSave" Content="Save and close" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="200" IsTabStop="True" Click="buttonSave_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="buttonSave_alternative" Header="Save without closing" Click="buttonSave_alternative_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="buttonSavePrint" Content="Generate PDF" Margin="8"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="200" IsTabStop="True" Click="buttonSavePrint_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="buttonSavePrint_alternative" Header="Generate PDF and close this window" Click="buttonSavePrint_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="buttonCancel" Content="Cancel and clear" Margin="8" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="150" IsTabStop="True" Click="buttonCancel_Click" Background="LightGray" Foreground="Black"/>
+            <Button x:Name="buttonDuplicate" Content="Duplicate record" Margin="8" ToolTip="Creates new record, taking all vehicle info and customer info from this record. Services, date, notes are not kept unless set in settings." HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="LightGray" Foreground="Black" Width="150" IsTabStop="True" Click="buttonDuplicate_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="buttonDuplicateKeepNoteService" Header="Duplicate this record but keep notes and services" Click="buttonDuplicate_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <Separator/>
+                        <MenuItem Name="buttonDuplicateKeepNote" Header="Duplicate this record but keep notes" Click="buttonDuplicate_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <MenuItem Name="buttonDuplicateKeepService" Header="Duplicate this record but keep services" Click="buttonDuplicate_Click" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="buttonDelete" Content="Delete record" Margin="8"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" Width="130" IsTabStop="True" Click="buttonDelete_Click" Background="DarkRed" Foreground="White"/>
+
+        </StackPanel>
+        <Label x:Name="labelTotal" MouseUp="labelTotal_MouseUp" Content="Total amount: $666.34454545" HorizontalAlignment="Right" Margin="873,0,0,5" VerticalAlignment="Bottom" ToolTip="That is calculated from all service records that you entered. If not updating make sure no cells are red (red means bad number!)You can also click on this text to force update."/>
+
+
+        <Grid Margin="5,170,5,50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.8*" MaxWidth="1200"></ColumnDefinition>
+                <ColumnDefinition Width="0.3*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <DataGrid Grid.Column="0" x:Name="dataGridServices" FontSize="18" ColumnWidth="*" CanUserSortColumns="False"  CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" BorderBrush="Gray" BorderThickness="1"
+                      CellEditEnding="dataGridServices_CellEditEnding"
+                      CurrentCellChanged="dataGridServices_CurrentCellChanged"
+                      PreviewKeyDown="dataGridServices_PreviewKeyDown"
+                      KeyboardNavigation.ControlTabNavigation="Continue"
+                      Validation.Error="dataGridServices_Error"
+                      
+                      ItemsSource="{Binding Path=., NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                      
+                      ToolTip=""
+                      
+                      >
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#44AEFF00"></Setter>
+                                <Setter Property="Foreground" Value="Black"></Setter>
+                                <Setter Property="BorderThickness" Value="4"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter Property="BorderThickness" Value="0.5"/>
+                                <Setter Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <!--BasedOn is optional-->
+                        <Style.Triggers>
+                            <Trigger Property="Validation.HasError" Value="True">
+                                <Setter Property="Background" Value="#FFFF7979"/>
+                                <Setter Property="BorderThickness" Value="4"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="dataGridContext_RemoveRow" Header="Remove this row" Click="dataGridContext_Button" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <Separator/>
+                        <MenuItem Name="dataGridContext_InsertAbove" Header="Insert empty row above" Click="dataGridContext_Button" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <MenuItem Name="dataGridContext_InsertBelow" Header="Insert empty row below" Click="dataGridContext_Button" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <Separator/>
+                        <MenuItem Name="dataGridContext_InsertParts" Header="Insert '- parts' into this cell" Click="dataGridContext_Button" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                        <MenuItem Name="dataGridContext_InsertLabor" Header="Insert '- labor' into this cell" Click="dataGridContext_Button" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+
+            </DataGrid>
+
+            <Label Content="Notes" Grid.Column="1" ToolTip="Notes will not be printed on the invoice"></Label>
+            <TextBox BorderThickness="0.5" x:Name="textBoxNotes" Grid.Column="1" Margin="5,30,0,0" ToolTip="Notes will not be printed on the invoice" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"  TextWrapping="WrapWithOverflow" TextChanged="textBoxNotes_TextChanged"></TextBox>
+
+
+        </Grid>
+    </Grid>
+</Window>
