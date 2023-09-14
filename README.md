@@ -1,3 +1,4 @@
+![screenshot](https://github.com/peterPacho/AutoInvoicer/blob/master/Screenshots/1.png?raw=true)
 ## Description
 This is a simple database program designed to use in the Automotive Shop.
 It's supposed to provide a way to create invoices and quotes for the clients and a way to easily look up the vehicle's service history - without any cloud, servers, and subscription fees.
@@ -15,3 +16,8 @@ No warranty of any sort. It was somewhat tested - the two-person shop that I wro
 
 
 There is no public version history before 1.4.0. Whole repository was reuploaded to remove any personal info.
+
+## Features
+Program offers simple invoice editor, field for notes that can be seen only be the shop, and a way to generate invoice for the client. Cost field support math operations, and service text field have build-in service shortcuts for common services like brake replacement or oil changes.
+![ss2](https://github.com/peterPacho/AutoInvoicer/blob/master/Screenshots/2.png?raw=true)
+![ss3](https://github.com/peterPacho/AutoInvoicer/blob/master/Screenshots/3.png?raw=true)
