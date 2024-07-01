@@ -615,7 +615,8 @@ namespace AutoInvoicer
         {
             dataChanged();
 
-            textBoxVin.Text = textBoxVin.Text.ToUpper();
+            if (textBoxVin.Text.Length != 0)
+                textBoxVin.Text = textBoxVin.Text.ToUpper();
 
             if (textBoxVin.Text.Length != 0 && textBoxVin.Text.Length != 17)
                 textBoxVin.ToolTip = "Proper VIN has 17 characters. This one has " + Convert.ToString(textBoxVin.Text.Length) + " characters.";

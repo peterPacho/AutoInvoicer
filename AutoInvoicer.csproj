@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Authors>Piotr Pacholarz</Authors>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <Description>Database software designed to catalog invoices.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
